@@ -31,7 +31,8 @@ After this point, three left mouse button clicks will be used to mark one circle
 desired.
 
 ### Screenshot
-![Screenshot](https://raw.github.com/krischer/CircleThingy/master/test_image.png)
+![Screenshot](https://raw.github.com/krischer/CircleThingy/master/screenshot_1.png)
+![Screenshot](https://raw.github.com/krischer/CircleThingy/master/screenshot_2.png)
 
 
 ### Caveats
