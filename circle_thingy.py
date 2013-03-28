@@ -69,7 +69,7 @@ class GlobalHandler(object):
         self.fig = plt.gcf()
         plt.subplots_adjust(left=0.0, right=1.0, bottom=0.0, top=1.0)
         plt.suptitle("Pick scale with right mouse button, circles with left.")
-        self.image = image
+        self.image = image[::-1, :]
         plt.imshow(self.image)
         self.redraw()
 
