@@ -21,7 +21,7 @@ It currently works for one picture at a time (only tested with PNG images but mi
 Run the script with the path to the picture as the only argument:
 
 ```bash
-python cirle_thingy.py test_image.png
+python circle_thingy.py test_image.png
 ```
 
 This will open a window with the image. Two right mouse button clicks will be used to pick both ends of the scale on
