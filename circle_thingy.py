@@ -65,15 +65,20 @@ class GlobalHandler(object):
             "mpl_object": []}
         self.circles = []
         self.current_circle_points = []
+        self.lines = []
+        self.current_line_points = []
         self.scale_units = "E-6 m"
         self.fig = plt.gcf()
         plt.subplots_adjust(left=0.0, right=1.0, bottom=0.0, top=1.0)
-        plt.suptitle("Pick scale with right mouse button, circles with left.")
+        plt.suptitle("Pick scale first, then circles with left and lines with "
+            "right mouse button.")
         self.image = image[::-1, :]
         plt.imshow(self.image)
         self.redraw()
 
         self.color_index = 0
+        self.line_color_index = 3
+
         self.colors = ["yellow", "orange", "red", "violet", "lightblue"]
 
     def redraw(self):
@@ -83,10 +88,59 @@ class GlobalHandler(object):
         plt.yticks([])
         plt.xticks([])
 
-    def on_left_click(self, x, y):
+    def _check_scale_is_set(self):
         if not self.scale["length_of_scale_in_mu_meter"]:
             tkMessageBox.showerror("Error", "Please set the scale before "
                 "picking cirles.")
+            return False
+        return True
+
+    def on_line_click(self, x, y):
+        if self._check_scale_is_set() is False:
+            return
+
+        line_color = self.colors[self.line_color_index % len(self.colors)]
+        plt.scatter(x, y, color="white", s=50, edgecolor=line_color,
+            marker="x", lw=2.5)
+
+        # Start a new line.
+        if len(self.current_line_points) == 2:
+            self.current_line_points[:] = []
+
+        # Append current point to point list
+        self.current_line_points.append((x, y))
+
+        # Return
+        if len(self.current_line_points) == 1:
+            self.redraw()
+            return
+
+        factor = self.scale["length_of_scale_in_mu_meter"] / \
+            self.scale["length_of_scale_in_px"]
+
+        # Otherwise plot the line.
+        x_values = [_i[0] for _i in self.current_line_points]
+        y_values = [_i[1] for _i in self.current_line_points]
+        plt.plot(x_values, y_values, color=line_color, lw=2)
+
+        x_point = min(x_values) + 0.5 * abs(x_values[0] - x_values[1])
+        y_point = min(y_values) + 0.5 * abs(y_values[0] - y_values[1])
+
+        length = math.sqrt((x_values[0] - x_values[1]) ** 2 +
+            (y_values[0] - y_values[1]) ** 2)
+
+        plt.text(x_point, y_point, "Length: %.4fE-6 m" % (length *
+            factor), horizontalalignment='center', color="black",
+            verticalalignment='center', fontsize=11,
+            bbox=dict(facecolor=line_color, alpha=0.85, edgecolor="0.7"))
+
+        self.line_color_index += 1
+
+        self.redraw()
+
+    def on_circle_click(self, x, y):
+        if not self.scale["length_of_scale_in_mu_meter"]:
+            self.on_scala_click(x, y)
             return
         plt.scatter(x, y, color="white", s=60, edgecolor="blue", marker="x",
             lw=2.5)
@@ -117,7 +171,7 @@ class GlobalHandler(object):
             plt.gca().add_patch(circle)
         self.redraw()
 
-    def on_right_click(self, x, y):
+    def on_scala_click(self, x, y):
         sc = self.scale
 
         # Reset if already exising.
@@ -194,9 +248,10 @@ def on_mouse_click(event):
     global handler
     x, y = event.xdata, event.ydata
     if event.button == 1:
-        handler.on_left_click(x, y)
+        handler.on_circle_click(x, y)
     elif event.button == 3:
-        handler.on_right_click(x, y)
+        handler.on_line_click(x, y)
+    del event
 
 
 def on_close(event):
