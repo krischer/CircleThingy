@@ -24,11 +24,14 @@ Run the script with the path to the picture as the only argument:
 python circle_thingy.py test_image.png
 ```
 
-This will open a window with the image. Two right mouse button clicks will be used to pick both ends of the scale on
-the picture. After entering the physical size of the scale, it will appear on the picture.
+This will open a window with the image. The first two left mouse button clicks
+will be used to pick both ends of the scale on the picture. After entering the
+physical size of the scale, it will appear on the picture.
 
-After this point, three left mouse button clicks will be used to mark one circle. This can be repeated as often as
-desired.
+After this point, three left mouse button clicks will be used to mark one
+circle. This can be repeated as often as desired.
+
+Two right mouse button click will alternatively pick a line segment.
 
 ### Screenshot
 ![Screenshot](https://raw.github.com/krischer/CircleThingy/master/screenshot_1.png)
